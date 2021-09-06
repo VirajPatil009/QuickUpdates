@@ -1,78 +1,165 @@
 import React, { useState } from "react";
 import {
-  Alert, // alerts whatever text is passed to it
-  SafeAreaView, // renders content within the safe area boundaries of a device
-  StyleSheet, // adds styles to components
-  View, // most fundamental component for building the UI. It acts as a container that supports layout with Flexbox, style, some touch handling, and accessibility controls
+  TextInput,
+  SafeAreaView,
+  StyleSheet,
+  Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
+  View,
+  ScrollView,
+  Text,
 } from "react-native";
-import {
-  Button, // wrapper around React Native's own `Button` component with some additional styling and props
-  Input, // wrapper around React Native's `Text` component with additional styling and props
-  Text, // wrapper around `TextInput` component from React Native containing additional styles and props
-} from "react-native-elements";
+
+import { Picker } from "@react-native-community/picker";
 import * as yup from "yup";
 import { Formik } from "formik";
 import FormButton from "../components/FormButton";
+import db from "../db/firestore";
+import { useNavigation } from "@react-navigation/native";
+import CustomImagePicker, { onImagePicked } from "../components/ImagePicker";
+import uuid from "uuid";
 
-export default function Header() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+export default function ContentForm({ route, navigation }) {
+  // const { params } = route.state;
+  // const navigation = useNavigation();
 
-  const handleTitleChange = (title) => {
-    setTitle({ title });
+  // const setPostImage = (image) => {
+  //   props.handleChange("imageURI", image.uri);
+  // };
+  setUploadedImage = (image) => {
+    const fileExt = image.split(".").pop();
+    console.log("submit");
+    console.log("ext", fileExt);
   };
+  // const uploadImage = (imageURI) => {
 
-  const handleContentChange = (content) => {
-    setContent({ content });
-  };
-
-  const handlepost = () => {};
-
+  // };
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.inputContainer}>
-        <Input
-          name="title"
-          placeholder="Enter title"
-          autoCapitalize="none"
-          onChangeText={() => handleTitleChange}
-        />
-        <Input
-          name="content"
-          multiline
-          numberOfLines={22}
-          placeholder="Enter content"
-          onChangeText={handleContentChange}
-          style={styles.multiline}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <FormButton
-          buttonType="outline"
-          onPress={handlepost}
-          title="Post"
-          buttonColor="#039BE5"
-        />
-      </View>
-    </SafeAreaView>
+    <Formik
+      initialValues={{ title: "", content: "", topic: "0", imageURI: null }}
+      onSubmit={(values) => {
+        uploadImage(imageURI);
+        db.collection("Posts")
+          .add({
+            title: values.title,
+            content: values.content,
+            topic: values.topic,
+            createdAt: new Date(),
+          })
+          .then(
+            Alert.alert(
+              "Congrats",
+              "Your post published successfully!",
+              [
+                {
+                  text: "Ok",
+                  onPress: () => navigation.goBack(),
+                  style: "Ok",
+                },
+              ],
+              {
+                cancelable: true,
+                onDismiss: () => navigation.goBack(),
+              }
+            )
+          );
+      }}
+    >
+      {(props) => {
+        return (
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView>
+              <SafeAreaView style={styles.formContainer}>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    onValueChange={props.handleChange("topic")}
+                    selectedValue={props.values.topic}
+                  >
+                    <Picker.Item label="Select Tab" value="0"></Picker.Item>
+                    <Picker.Item label="Topic1" value="1"></Picker.Item>
+                    <Picker.Item label="Topic2" value="2"></Picker.Item>
+                    <Picker.Item label="Topic3" value="3"></Picker.Item>
+                  </Picker>
+                </View>
+                <TextInput
+                  name="title"
+                  placeholder="Enter title"
+                  autoCapitalize="none"
+                  onChangeText={props.handleChange("title")}
+                  value={props.values.title}
+                  style={styles.input}
+                  maxLength={255}
+                />
+                <TextInput
+                  name="content"
+                  multiline
+                  numberOfLines={6}
+                  placeholder="Enter content"
+                  maxLength={5000}
+                  onChangeText={props.handleChange("content")}
+                  value={props.values.content}
+                  style={[styles.multilineInput, styles.input]}
+                />
+                <View style={styles.imageContainer}>
+                  <CustomImagePicker
+                    image={props.values.image}
+                    // onImagePicked=({ image }) =>
+                    //   props.handleChange("imageURI", image.uri)
+                    onImagePicked={setUploadedImage}
+                  />
+                </View>
+                <View style={styles.buttonContainer}>
+                  <FormButton
+                    buttonType="outline"
+                    onPress={props.handleSubmit}
+                    title="Post"
+                    buttonColor="#039BE5"
+                  />
+                </View>
+              </SafeAreaView>
+            </ScrollView>
+          </TouchableWithoutFeedback>
+        );
+      }}
+    </Formik>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  formContainer: {
+    padding: 20,
     backgroundColor: "#fff",
+    flex: 1,
   },
   buttonContainer: {
     margin: 15,
     justifyContent: "flex-start",
   },
-  inputContainer: {
+  imageContainer: {
     margin: 15,
-    flex: 1,
+    //width: 100,
+    // backgroundColor: "black",
+    borderColor: "black",
+    // color: black,
     justifyContent: "flex-start",
   },
-  multiline: {
-    marginTop: -180,
+  input: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 10,
+    fontSize: 18,
+    borderRadius: 6,
+    margin: 10,
+  },
+  multilineInput: {
+    textAlignVertical: "top",
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    fontSize: 18,
+    borderRadius: 6,
+    margin: 10,
   },
 });

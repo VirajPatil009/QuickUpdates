@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "248347257732",
+    "project_id": "quickupdates-8b6da",
+    "storage_bucket": "quickupdates-8b6da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248347257732:android:0c84cebf1ff34ba543cbd1",
+        "android_client_info": {
+          "package_name": "com.viraj.quickupdates"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248347257732-n5jc1j0lpvmikhfgm69cit98gaeglod0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeUt2bDx4DNUjlz-yeFv4uekRa4E3NWMg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248347257732-n5jc1j0lpvmikhfgm69cit98gaeglod0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
