@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
-export default function CustomImagePicker() {
+export default function CustomImagePicker({ image, onImagePicked }) {
   const [selectedImage, setSelectedImage] = React.useState(null);
+  // const onImagePicked = () => {
+  //   selectedImage;
+  // };
+  useEffect(() => {
+    if (image) {
+      console.log("useEffect: " + image);
+      setSelectedImage({ uri: image });
+    }
+  }, [image]);
 
   let openImagePickerAsync = async () => {
     let permissionResult =
@@ -18,19 +27,20 @@ export default function CustomImagePicker() {
 
     if (pickerResult.cancelled === true) {
       return;
+    } else {
+      console.log("Image: " + pickerResult.uri);
+      setSelectedImage({ uri: pickerResult.uri });
+      console.log("SelectedImageImage: " + selectedImage);
+      onImagePicked = () => {
+        uri: pickerResult.uri;
+      };
     }
-
-    setSelectedImage({ localUri: pickerResult.uri });
-    onImagePicked(selectedImage);
   };
 
   if (selectedImage !== null) {
     return (
       <View style={styles.container}>
-        <Image
-          source={{ uri: selectedImage.localUri }}
-          style={styles.thumbnail}
-        />
+        <Image source={selectedImage} style={styles.thumbnail} />
         <TouchableOpacity onPress={openImagePickerAsync} style={styles.button}>
           <Text style={styles.buttonText}>Change Photo</Text>
         </TouchableOpacity>

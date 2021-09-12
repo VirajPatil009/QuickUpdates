@@ -1,55 +1,81 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ActivityIndicator, RefreshControl } from "react-native";
+import { ListItem } from "react-native-elements";
+import { FlatList } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 import PostItem from "../components/PostItem";
-import db from "../db/firestore";
+import { fetchPosts, fetchMorePosts } from "./fetchApi";
 
 export default function Tab1() {
   const [posts, setPosts] = useState([]);
+  const [startAfter, setStartAfter] = React.useState(Object);
+  const [lastPost, setLastPost] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   useEffect(() => {
     console.log(new Date().toUTCString());
-    //.orderBy("createdAt", "desc")
-    db.collection("Posts")
-      .where("topic", "==", "1")
-      .onSnapshot({
-        next: (querySnapshot) => {
-          const posts = querySnapshot.docs.map((docSnapshot) => ({
-            id: docSnapshot.id,
-            title: docSnapshot.data().title,
-            content: docSnapshot.data().content,
-            topic: docSnapshot.data().topic,
-            createdAt: docSnapshot.data().createdAt,
-          }));
+    getPosts();
+  }, []);
 
-          const sortedPosts = posts.sort(function (a, b) {
-            if (a.createdAt.seconds > b.createdAt.seconds) return -1;
-            if (a.createdAt.seconds < b.createdAt.seconds) return 1;
-            return 0;
-          });
-          setPosts(sortedPosts);
-        },
-        error: (error) => console.log(error),
-      });
-  }, [setPosts]);
+  async function getPosts() {
+    setIsLoading(true);
+    const postData = await fetchPosts("1");
+    setPosts([...posts, ...postData.posts]);
+    setStartAfter(postData.lastVisible);
+    setIsLoading(false);
+  }
 
+  async function getMorePosts() {
+    setIsLoading(true);
+    if (!lastPost) {
+      const postData = await fetchMorePosts("1", startAfter);
+      setPosts([...posts, ...postData.posts]);
+      setStartAfter(postData.lastVisible);
+      postData.posts.length == 0 ? setLastPost(true) : setLastPost(false);
+    }
+    setIsLoading(false);
+  }
+
+  function renderPosts({ item }) {
+    return (
+      <ListItem key={item.index} bottomDivider>
+        <PostItem
+          key={item.index}
+          tabname={item.topic}
+          title={item.title}
+          content={item.content}
+        />
+      </ListItem>
+    );
+  }
   return (
-    <ScrollView>
-      <View style={styles.center}>
-        {posts?.map((post, index) => (
-          <PostItem
-            key={index}
-            tabname={post.topic}
-            title={post.title}
-            content={post.content}
-          />
-        ))}
-      </View>
-    </ScrollView>
+    <SafeAreaView style={styles.center}>
+      {isLoading ? <ActivityIndicator /> : null}
+      <FlatList
+        data={posts}
+        renderItem={renderPosts}
+        keyExtractor={(item, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
+        onEndReached={getMorePosts}
+        onEndReachedThreshold={0.01}
+        enableEmptySections={true}
+        scrollEventThrottle={150}
+        ListFooterComponent={() => !lastPost && <ActivityIndicator />}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={getPosts} />
+        }
+      ></FlatList>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   center: {
     flex: 1,
+    marginTop: -30,
+  },
+  title: {
+    fontSize: 12,
+    margin: 10,
   },
 });

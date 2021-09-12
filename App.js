@@ -21,7 +21,7 @@ export default function App() {
         component={Home}
         options={{ headerShown: false }}
       ></Stack.Screen>
-      <Stack.Screen name="Add New Post" component={Content}></Stack.Screen>
+      <Stack.Screen name="नवीन पोस्ट जोडा" component={Content}></Stack.Screen>
     </Stack.Navigator>
   );
 

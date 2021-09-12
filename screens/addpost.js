@@ -27,25 +27,26 @@ export default function ContentForm({ route, navigation }) {
   // const setPostImage = (image) => {
   //   props.handleChange("imageURI", image.uri);
   // };
-  setUploadedImage = (image) => {
-    const fileExt = image.split(".").pop();
-    console.log("submit");
-    console.log("ext", fileExt);
-  };
+  // setUploadedImage = (image) => {
+  //   const fileExt = image.split(".").pop();
+  //   console.log("submit");
+  //   console.log("ext", fileExt);
+  // };
   // const uploadImage = (imageURI) => {
 
   // };
   return (
     <Formik
-      initialValues={{ title: "", content: "", topic: "0", imageURI: null }}
+      initialValues={{ title: "", content: "", topic: "0", approved: false }}
       onSubmit={(values) => {
-        uploadImage(imageURI);
+        // console.log("asasd " & values.imageURI);
         db.collection("Posts")
           .add({
             title: values.title,
             content: values.content,
             topic: values.topic,
             createdAt: new Date(),
+            approved: values.approved,
           })
           .then(
             Alert.alert(
@@ -76,15 +77,29 @@ export default function ContentForm({ route, navigation }) {
                     onValueChange={props.handleChange("topic")}
                     selectedValue={props.values.topic}
                   >
-                    <Picker.Item label="Select Tab" value="0"></Picker.Item>
-                    <Picker.Item label="Topic1" value="1"></Picker.Item>
-                    <Picker.Item label="Topic2" value="2"></Picker.Item>
-                    <Picker.Item label="Topic3" value="3"></Picker.Item>
+                    <Picker.Item label="टॅब निवडा" value="0"></Picker.Item>
+                    <Picker.Item label="कथा" value="1"></Picker.Item>
+                    <Picker.Item label="विनोद" value="2"></Picker.Item>
+                    {/* <Picker.Item label="Topic3" value="3"></Picker.Item> */}
                   </Picker>
                 </View>
+                {/* <View style={styles.pickerContainer}>
+                  <Picker
+                    onValueChange={props.handleChange("language")}
+                    selectedValue={props.values.topic}
+                  >
+                    <Picker.Item
+                      label="Select Language"
+                      value="0"
+                    ></Picker.Item>
+                    <Picker.Item label="Marathi" value="1"></Picker.Item>
+                    <Picker.Item label="Hindi" value="2"></Picker.Item>
+                    <Picker.Item label="English" value="3"></Picker.Item>
+                  </Picker>
+                </View> */}
                 <TextInput
                   name="title"
-                  placeholder="Enter title"
+                  placeholder="शिर्षक प्रविष्ट करा"
                   autoCapitalize="none"
                   onChangeText={props.handleChange("title")}
                   value={props.values.title}
@@ -95,25 +110,25 @@ export default function ContentForm({ route, navigation }) {
                   name="content"
                   multiline
                   numberOfLines={6}
-                  placeholder="Enter content"
+                  placeholder="मजकूर प्रविष्ट करा"
                   maxLength={5000}
                   onChangeText={props.handleChange("content")}
                   value={props.values.content}
                   style={[styles.multilineInput, styles.input]}
                 />
-                <View style={styles.imageContainer}>
+                {/* <View style={styles.imageContainer}>
                   <CustomImagePicker
                     image={props.values.image}
                     // onImagePicked=({ image }) =>
                     //   props.handleChange("imageURI", image.uri)
-                    onImagePicked={setUploadedImage}
+                    // onImagePicked={setPostImage}
                   />
-                </View>
+                </View> */}
                 <View style={styles.buttonContainer}>
                   <FormButton
                     buttonType="outline"
                     onPress={props.handleSubmit}
-                    title="Post"
+                    title="पोस्ट"
                     buttonColor="#039BE5"
                   />
                 </View>

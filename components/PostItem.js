@@ -7,8 +7,8 @@ export default function PostItem({ title, content }) {
   return (
     <View style={styles.postContainer}>
       <Card>
-        <Text style={styles.title}>Post title : {title}</Text>
-        <Text style={styles.title}>Post Content : {content}</Text>
+        <Text style={styles.title}>शिर्षक : {title}</Text>
+        <Text style={styles.title}>मजकूर : {content}</Text>
       </Card>
     </View>
   );

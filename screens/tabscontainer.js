@@ -5,8 +5,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import Tab1 from "../tabs/Tab1";
 import Tab2 from "../tabs/Tab2";
-import Tab3 from "../tabs/Tab3";
+//import Tab3 from "../tabs/Tab3";
 import { Dimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const windowWidth = Dimensions.get("window").width;
 //const windowHeight = Dimensions.get("window").height;
@@ -19,14 +20,14 @@ export default function Home() {
       <TopTab.Navigator
         initialRouteName="Tab1"
         tabBarOptions={{
-          activeTintColor: "#e91e63",
+          activeTintColor: "#000",
         }}
       >
         <TopTab.Screen
           name="Tab1"
           component={Tab1}
           options={{
-            tabBarLabel: "Tab1",
+            tabBarLabel: "कथा",
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons
                 name="filter-tilt-shift"
@@ -40,14 +41,14 @@ export default function Home() {
           name="Tab2"
           component={Tab2}
           options={{
-            tabBarLabel: "Tab2",
+            tabBarLabel: "विनोद",
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="foundation" color={"#fff"} size={24} />
             ),
             //tabBarBadge: 3,
           }}
         />
-        <TopTab.Screen
+        {/* <TopTab.Screen
           name="Tab3"
           component={Tab3}
           options={{
@@ -56,7 +57,7 @@ export default function Home() {
               <MaterialIcons name="games" color={"#fff"} size={24} />
             ),
           }}
-        />
+        />*/}
       </TopTab.Navigator>
     </View>
   );

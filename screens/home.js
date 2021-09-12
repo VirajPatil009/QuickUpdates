@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.title}>Quick Updates</Text>
+        <Text style={styles.title}>सोशल कट्टा</Text>
         {/* <View style={styles.button}>
           <MaterialIcons
             name="add-circle-outline"
@@ -29,7 +29,7 @@ export default function Home() {
           color="#333"
           // label="New Post"
           icon="plus"
-          onPress={() => navigation.navigate("Add New Post")}
+          onPress={() => navigation.navigate("नवीन पोस्ट जोडा")}
         />
       </View>
     </SafeAreaView>
